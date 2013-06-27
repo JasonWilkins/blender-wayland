@@ -302,6 +302,14 @@ macro(setup_liblinks
 	if(WITH_SDL)
 		target_link_libraries(${target} ${SDL_LIBRARY})
 	endif()
+	if(WITH_WAYLAND)
+		target_link_libraries(
+			${target}
+			${WAYLAND_CLIENT_LIBRARIES}
+			${WAYLAND_EGL_LIBRARIES}
+			${OPENGLES_EGL_LIBRARY}
+		)
+	endif()
 	if(WITH_CODEC_QUICKTIME)
 		target_link_libraries(${target} ${QUICKTIME_LIBRARIES})
 	endif()

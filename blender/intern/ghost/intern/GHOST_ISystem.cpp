@@ -45,12 +45,14 @@
 #elif defined(WIN32)
 #  include "GHOST_SystemWin32.h"
 #else
-#  ifdef __APPLE__
+#  if defined __APPLE__
 #    ifdef GHOST_COCOA
 #      include "GHOST_SystemCocoa.h"
 #    else
 #      include "GHOST_SystemCarbon.h"
 #    endif
+#  elif defined WITH_WAYLAND
+#      include "GHOST_SystemWayland.h"
 #  else
 #    include "GHOST_SystemX11.h"
 #  endif
@@ -77,10 +79,12 @@ GHOST_TSuccess GHOST_ISystem::createSystem()
 #    else
 		m_system = new GHOST_SystemCarbon();
 #    endif
+#  elif defined WITH_WAYLAND
+		m_system = new GHOST_SystemWayland();
 #  else
 		m_system = new GHOST_SystemX11();
 #  endif
-#endif 
+#endif
 		success = m_system != 0 ? GHOST_kSuccess : GHOST_kFailure;
 	}
 	else {

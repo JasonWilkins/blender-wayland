@@ -173,6 +173,9 @@ if(UNIX AND NOT APPLE)
 	option(WITH_X11_XF86VMODE "Enable X11 video mode switching"	ON)
 	option(WITH_SYSTEM_GLEW "Use GLEW OpenGL wrapper library provided by the operating system" ON)
 
+	option(WITH_WAYLAND "Enable building blender against Wayland for windowing" OFF)
+	mark_as_advanced(WITH_WAYLAND)
+
 	# freebsd doesn't seems to support XDND
 	if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 		option(WITH_GHOST_XDND   "Enable drag'n'drop support on Linux using XDND protocol" ON)
@@ -463,7 +466,7 @@ if(WITH_INSTALL_PORTABLE)
 	set(CMAKE_SKIP_BUILD_RPATH TRUE)
 endif()
 
-if(WITH_GHOST_SDL OR WITH_HEADLESS)
+if(WITH_GHOST_SDL OR WITH_HEADLESS OR WITH_WAYLAND)
 	set(WITH_GHOST_XDND OFF)
 	set(WITH_X11_XF86VMODE OFF)
 	set(WITH_X11_XINPUT OFF)
@@ -632,6 +635,36 @@ if(UNIX AND NOT APPLE)
 		if(NOT SDL_FOUND)
 			set(WITH_SDL OFF)
 		endif()
+	endif()
+
+	if(WITH_WAYLAND)
+		find_package_wrapper(Wayland)
+		find_package_wrapper(OpenGLES)
+
+		mark_as_advanced(
+			WAYLAND_CLIENT_LIBRARIES
+			WAYLAND_CLIENT_INCLUDE_DIR
+			WAYLAND_EGL_INCLUDE_DIR
+			WAYLAND_EGL_LIBRARIES
+			OPENGLES_EGL_LIBRARY
+			OPENGLES_EGL_INCLUDE_DIR
+		)
+
+		if(NOT WAYLAND_CLIENT_FOUND OR NOT WAYLAND_EGL_FOUND OR NOT OPENGLES_EGL_FOUND)
+				if(NOT WAYLAND_CLIENT_FOUND)
+					message(FATAL_ERROR "Wayland client libraries not found.")
+				endif()
+
+				if(NOT WAYLAND_EGL_FOUND)
+					message(FATAL_ERROR "Wayland EGL libraries not found.")
+				endif()
+
+				if(NOT OPENGL_EGL_FOUND)
+					message(FATAL_ERROR "EGL libraries not found.")
+				endif()
+		endif()
+
+		add_definitions("-DWITH_WAYLAND")
 	endif()
 
 	if(WITH_JACK)
@@ -2230,6 +2263,7 @@ if(FIRST_RUN)
 	info_cfg_option(WITH_MEM_JEMALLOC)
 	info_cfg_option(WITH_SYSTEM_GLEW)
 	info_cfg_option(WITH_SYSTEM_OPENJPEG)
+	info_cfg_option(WITH_WAYLAND)
 
 	info_cfg_text("Image Formats:")
 	info_cfg_option(WITH_IMAGE_CINEON)
