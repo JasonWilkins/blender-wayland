@@ -173,8 +173,8 @@ if(UNIX AND NOT APPLE)
 	option(WITH_X11_XF86VMODE "Enable X11 video mode switching"	ON)
 	option(WITH_SYSTEM_GLEW "Use GLEW OpenGL wrapper library provided by the operating system" ON)
 
-	option(WITH_WAYLAND "Enable building blender against Wayland for windowing" OFF)
-	mark_as_advanced(WITH_WAYLAND)
+	option(WITH_GHOST_WAYLAND "Enable building blender against Wayland for windowing" OFF)
+	mark_as_advanced(WITH_GHOST_WAYLAND)
 
 	# freebsd doesn't seems to support XDND
 	if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
@@ -466,7 +466,7 @@ if(WITH_INSTALL_PORTABLE)
 	set(CMAKE_SKIP_BUILD_RPATH TRUE)
 endif()
 
-if(WITH_GHOST_SDL OR WITH_HEADLESS OR WITH_WAYLAND)
+if(WITH_GHOST_SDL OR WITH_HEADLESS OR WITH_GHOST_WAYLAND)
 	set(WITH_GHOST_XDND OFF)
 	set(WITH_X11_XF86VMODE OFF)
 	set(WITH_X11_XINPUT OFF)
@@ -637,7 +637,7 @@ if(UNIX AND NOT APPLE)
 		endif()
 	endif()
 
-	if(WITH_WAYLAND)
+	if(WITH_GHOST_WAYLAND)
 		find_package_wrapper(Wayland)
 		find_package_wrapper(OpenGLES)
 
@@ -664,7 +664,7 @@ if(UNIX AND NOT APPLE)
 				endif()
 		endif()
 
-		add_definitions("-DWITH_WAYLAND")
+		add_definitions("-DWITH_GHOST_WAYLAND")
 	endif()
 
 	if(WITH_JACK)
@@ -2263,7 +2263,7 @@ if(FIRST_RUN)
 	info_cfg_option(WITH_MEM_JEMALLOC)
 	info_cfg_option(WITH_SYSTEM_GLEW)
 	info_cfg_option(WITH_SYSTEM_OPENJPEG)
-	info_cfg_option(WITH_WAYLAND)
+	info_cfg_option(WITH_GHOST_WAYLAND)
 
 	info_cfg_text("Image Formats:")
 	info_cfg_option(WITH_IMAGE_CINEON)

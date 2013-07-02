@@ -51,7 +51,7 @@
 #    else
 #      include "GHOST_SystemCarbon.h"
 #    endif
-#  elif defined WITH_WAYLAND
+#  elif defined WITH_GHOST_WAYLAND
 #      include "GHOST_SystemWayland.h"
 #  else
 #    include "GHOST_SystemX11.h"
@@ -79,7 +79,7 @@ GHOST_TSuccess GHOST_ISystem::createSystem()
 #    else
 		m_system = new GHOST_SystemCarbon();
 #    endif
-#  elif defined WITH_WAYLAND
+#  elif defined WITH_GHOST_WAYLAND
 		m_system = new GHOST_SystemWayland();
 #  else
 		m_system = new GHOST_SystemX11();
